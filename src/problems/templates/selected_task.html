@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode-style Problem</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+{% block body %}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <script src="{% static 'django_ace/ace.js' %}"></script>
+    <script src="{% static 'django_ace/ext-language_tools.js' %}"></script>
+    {{ form.media }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: rgb(28, 28, 28);
+        }
+        .django-ace-editor {
+            border-radius: 10px;
+        }
+        .tabs {
+            display: flex;
+            background-color: #292929;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab {
+            margin-right: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #b0b0b0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .tab:hover {
+            color: #ffffff;
+        }
+
+        .tab-active {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Стили для основного контейнера задачи */
+        .task-container {
+            background-color: #323232;
+            color: #dcdcdc;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 60%;
+            height: 770px;
+            margin-top: 15px;
+            margin-left: 40px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Стили для заголовка задачи */
+        .task-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        /* Стили для тегов */
+        .tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+
+        /* Стили для описания */
+        .task-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #c8c8c8;
+        }
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Контейнер с задачей (слева) */
+.task-container {
+    width: 1000px; /* Занимает 60% ширины */
+    margin-left: -400px; /* Отступ слева */
+}
+.form-container p {
+    display: none;
+}
+
+/* Контейнер с формой (справа) */
+.ace_editor {
+    width: 895px !important;   /* Устанавливает ширину редактора */
+    height: 600px !important;  /* Устанавливает высоту редактора */
+    border-radius: 10px;
+}
+.tabs a {
+    text-decoration: none;
+    color: #9f9f9f; /* Исходный цвет ссылки */
+    transition: color 0.3s ease, transform 0.3s ease; /* Анимация цвета и увеличения */
+}
+
+.tabs a:hover {
+    color: #ffffff; /* Цвет при наведении */
+    transform: scale(1.1); /* Увеличение текста при наведении */
+}
+
+    </style>
+<div class="container">
+    <!-- Левый блок с задачей -->
+    <div class="task-container">
+        <!-- Вкладки -->
+        <div class="tabs" style="width: 400px">
+            <a href="#" class="tab tab-active">Description</a>
+            <a href="#" class="tab">Editorial</a>
+            <a href="#" class="tab">Solutions</a>
+            <a href="#" class="tab">Submissions</a>
+        </div>
+        <!-- Заголовок задачи -->
+        <div class="task-title">{{ task.pk }}. {{ task.name }}</div>
+
+        <!-- Теги -->
+        <div class="tags">
+            {% if task.difficulty == 0 %}
+                <div class="tag-difficultly" style="background-color: #3c3c3c; color: #73cf5e; padding: 3px 8px; border-radius: 5px; font-size: 12px; font-weight: bold;">{{ task.get_difficulty_display }}</div>
+            {% elif task.difficulty == 1 %}
+                <div class="tag-difficultly" style="background-color: #3c3c3c; color: #cd9738; padding: 3px 8px; border-radius: 5px; font-size: 12px; font-weight: bold;">{{ task.get_difficulty_display }}</div>
+            {% else %}
+                <div class="tag-difficultly" style="background-color: #3c3c3c; color: #d53939; padding: 3px 8px; border-radius: 5px; font-size: 12px; font-weight: bold;">{{ task.get_difficulty_display }}</div>
+            {% endif %}
+            <div class="tag-category" style="background-color: #3c3c3c; color: #919191; padding: 3px 8px; border-radius: 5px; font-size: 12px; font-weight: bold;">{{ task.category }}</div>
+        </div>
+
+        <!-- Описание задачи -->
+        <div class="task-description">
+            <h6 style="color: white; background-color: #494949; width: 765px; height: 23px;border-radius: 3px">note: Before you decide, get your arguments which are indicated in the description. kwargs.get("name_arg")</h6>
+            {{ task.description }}
+        </div>
+    </div>
+
+    <!-- Правый блок с формой -->
+    <div class="form-container" style="margin-top: 17px; margin-left: 5px">
+        <form method="post" action="{% url 'problems:solved_task' pk=task.pk%}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="margin-left: -8px;width: 100px; height: 30px; border: none; background-color: #424242; color: white; border-radius: 3px; font-size: 14px;" class="btn btn-dark">Submit</button>
+        </form>
+    </div>
+</div>
+<div class="under-code-editor" style="background-color: #333333; height: 155px; width: 896px; margin-top: -157px; border-radius: 10px; margin-left: 845px">
+<div class="dropdown">
+    <button style="background-color: #424242; margin-left: 120px; height: 30px; font-family: 'JosefinSans'; font-size: 14px; margin-top: 10px"
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-expanded="false">
+        all languages
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+    </ul>
+</div>
+</div>
+{% endblock body %}
+</body>
+
+</html>

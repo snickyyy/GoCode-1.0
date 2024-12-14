@@ -1,0 +1,3 @@
+Hi, {{user.username}}
+<p>Please follow the link for finished registration</p>
+<a href="http://{{ domain }} {% url 'accounts:activate' pk=pk token=token%}">Register</a>

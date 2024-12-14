@@ -1,0 +1,646 @@
+/* ########################################### */
+/*                 Global                      */
+/* ########################################### */
+*{
+    box-sizing: border-box;
+}
+
+html{
+    font-size: 14px;
+    font-family: 'Titillium Web', sans-serif;
+    background-color:rgb(0,0,0);
+    color:#FEFEFE;
+}
+
+a{
+    color:#FF0042;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+h1{
+    font-size:16px;
+    font-weight: bolder;
+}
+
+
+/* ########################################### */
+/*           Forums.html                       */
+/* ########################################### */
+.container{
+    margin: 20px;
+    padding: 20px;
+}
+
+.subforum{
+    margin-top:20px;
+}
+
+.subforum-title{
+    background-color:#292B2E;
+    padding: 5px;
+    border-radius: 5px;
+    margin:4px;
+}
+
+.subforum-row{
+    display: grid;
+    grid-template-columns: 7% 60% 13% 20%;
+}
+
+.subforum-column{
+    padding: 10px;
+    margin:4px;
+    border-radius: 5px;
+    background-color:#111314;
+}
+
+.subforum-description *{
+    margin-block: 0;
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.subforum-icon i{
+    font-size: 45px;
+}
+
+.subforum-devider{
+    display: none;
+}
+
+
+/* For the smartphones */
+@media screen and (max-width: 460px) {
+    .container{
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .subforum-row{
+        display: grid;
+        grid-template-columns: 25% 75%;
+        grid-template-rows: 65% 35%;
+    }
+
+    .subforum-devider{
+        display: block;
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(190, 190, 190, 0), rgba(255, 255, 255, 0.75), rgba(190, 190, 190, 0));
+    }
+
+
+
+  }
+
+/* For the tablets */
+@media screen and (min-width: 460px) and (max-width: 1024px) {
+    .container{
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .subforum-row{
+        display: grid;
+        grid-template-columns: 10% 60% 10% 20%;
+    }
+
+    .subforum-icon i{
+        font-size: 35px;
+    }
+
+    html{
+        font-size: 14px;
+    }
+
+    h1{
+        font-size: 16px;
+    }
+
+  }
+/*   Header Section    */
+
+header{
+    margin-inline: 10px;
+}
+  /* Nav Bar styles */
+.navbar{
+    display:flex;
+    align-items: center;
+}
+.navigation {
+    background-color: #52057B; /* Фиолетовый фон */
+    padding: 10px;
+    width: 65%;
+    display: inline-block;
+    border-radius: 5px;
+    max-height: 80px;
+    margin-right: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Тень */
+    transition: all 0.3s ease; /* Плавный переход */
+}
+
+/* Анимация при наведении на панель */
+.navigation:hover {
+    background-color: #1E1E1E; /* Темно-серый фон */
+    box-shadow: 0px 6px 15px rgba(255, 0, 66, 0.8); /* Красная тень при наведении */
+    transform: translateY(-3px); /* Легкий подъем */
+}
+
+/* Анимация при фокусе */
+.navigation:focus-within {
+    background-color: #292B2E; /* Темно-серый фон при фокусе */
+    box-shadow: 0px 0px 20px 4px rgba(82, 7, 123, 0.8); /* Фиолетовая подсветка */
+    transform: scale(1.02); /* Легкое увеличение */
+}
+
+.close-icon i{
+    font-size:60px;
+    float: left;
+    cursor: pointer;
+}
+
+.nav-list{
+    list-style-type:none;
+    overflow: hidden;
+}
+
+.nav-item a{
+    float: right;
+    display:block;
+    text-align: center;
+    margin-inline: 20px;
+    font-size: 20px;
+    padding: 10px;
+    color:#fff;
+}
+
+.nav-item a:hover{
+    background-color: rgb(0,0,0,0.1);
+}
+
+.hide{
+    display: none;
+}
+
+.bar-icon{
+    font-size: 60px;
+    display: inline-block;
+    margin-right:10px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.pagination a {
+    color: #fff; /* Белый текст */
+    margin-inline: 5px;
+    padding: 10px 20px; /* Отступы кнопки */
+    border: 2px solid #52057b; /* Фиолетовая рамка */
+    border-radius: 30px; /* Закругленные углы */
+    background-color: #111314; /* Черный фон */
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s ease; /* Плавный переход для всех изменений */
+    display: inline-block;
+}
+
+/* Стили при наведении */
+.pagination a:hover {
+    background-color: #52057b; /* Фиолетовый фон при наведении */
+    color: #fff; /* Белый текст */
+    border: 2px solid #FF0042; /* Ярко-красная рамка при наведении */
+    box-shadow: 0px 4px 10px rgba(82, 7, 123, 0.8); /* Фиолетовая тень */
+    transform: scale(1.05); /* Увеличение кнопки */
+}
+
+/* Стили для активных кнопок */
+.pagination a.active {
+    background-color: #52057b; /* Фиолетовый фон для активной кнопки */
+    color: #fff; /* Белый цвет текста */
+    border: 2px solid #FF0042; /* Ярко-красная рамка */
+    box-shadow: 0px 4px 15px rgba(255, 0, 66, 0.8); /* Красная тень */
+}
+
+/* Стили для неактивных кнопок */
+.pagination a.disabled {
+    background-color: #2C2C2C; /* Тусклый фон для неактивных кнопок */
+    color: #999; /* Светло-серый текст */
+    border: 2px solid #2C2C2C; /* Тусклая рамка */
+    pointer-events: none; /* Отключить взаимодействие */
+}
+
+@font-face {
+    font-family: 'aquire';
+    src: url('../fonts/aquire.ttf') format('opentype');
+}
+
+.brand{
+    font-size:60px;
+    display: inline-block;
+    font-family:aquire;
+}
+
+/*Navbar for the smartphones*/
+@media screen and (max-width: 460px){
+    .navigation{
+        max-height: auto;
+    }
+
+    .close-icon i{
+        font-size:30px;
+    }
+
+    .nav-item a{
+        float:left;
+        display:inline;
+        margin-inline: 3px;
+        font-size: 10px;
+        padding: 5px;
+    }
+
+
+    .bar-icon{
+        font-size: 30px;
+    }
+
+    .brand{
+        font-size:20px;
+    }
+}
+
+  /* Search Box styles */
+.search-box{
+    border: solid 1px #52057b;
+    margin-top: 20px;
+    padding: 40px;
+    display:flex;
+    justify-content: center;
+    box-shadow:1px 2px 3px #52057b;
+}
+
+.search-box select{
+    padding: 10px;
+}
+
+.search-box input{
+    width: 200px;
+    padding: 10px;
+    font-size: 16px;
+    color: #FFFFFF;
+    background-color: #1E1E1E; /* Темный фон */
+    border: 2px solid #52057B; /* Фиолетовая обводка */
+    border-radius: 5px;
+    transition: all 0.3s ease; /* Плавный переход */
+    outline: none;
+}
+
+.search-box input:focus{
+    background-color: #1F0030FF; /* Фиолетовый фон */
+    border-color: #FFFFFF; /* Белая обводка */
+    color: #FFFFFF; /* Белый текст */
+    box-shadow: 0px 0px 10px 2px rgba(82, 5, 123, 0.8); /* Фиолетовая тень */
+    transform: scale(1.05); /* Увеличение */
+}
+
+.search-box input:hover {
+    border-color: #FF0042; /* Красная обводка при наведении */
+    background-color: #292B2E; /* Более светлый черный */
+}
+
+.search-box button{
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF; /* Белый текст */
+    background-color: #52057B; /* Фиолетовый фон */
+    border: 2px solid #52057B; /* Фиолетовая обводка */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Плавный переход */
+    outline: none;
+}
+
+.search-box button:hover{
+    background-color: #1E1E1E; /* Черный фон */
+    border-color: #FF0042; /* Красная обводка */
+    color: #FF0042; /* Красный текст */
+    box-shadow: 0px 0px 10px 2px rgba(255, 0, 66, 0.8); /* Красная тень */
+    transform: translateY(-3px); /* Легкий подъем */
+}
+
+.search-box button:focus{
+    background-color: #292B2E; /* Темно-серый фон */
+    border-color: #FFFFFF; /* Белая обводка */
+    color: #FFFFFF; /* Белый текст */
+    transform: scale(1.05); /* Увеличение */
+}
+
+/* search box for smrtphones */
+@media screen and (max-width: 460px){
+    .search-box input, .search-box button, .search-box select{
+        min-width: 300px;
+        margin-top: 5px;
+    }
+
+}
+
+/* forum info Styling */
+.forum-info{
+    padding: 20px;
+    background-color: #111314;
+}
+
+.chart{
+    font-size:20px;
+    font-weight:bold;
+}
+/* Footer Styling */
+
+footer{
+    margin-top: 20px;
+    padding: 20px;
+    background-color:  #52057b;
+    display: block;
+    text-align: center;
+}
+
+/* ########################################### */
+/*            posts.html                       */
+/* ########################################### */
+
+/* posts table's head  */
+.table-head{
+    display: flex;
+}
+
+.table-head div{
+    padding: 5px;
+    margin: 2px;
+    background-color: #2C2C2C;
+    font-weight: bold;
+}
+
+.table-head .status{
+    flex: 5%;
+}
+
+.table-head .subjects{
+    flex: 70%;
+}
+
+.table-head .replies{
+    flex: 10%;
+}
+
+.table-head .last-reply{
+    flex: 15%;
+}
+
+/* posts table's body  */
+
+.table-row{
+    display: flex;
+}
+
+.table-row .status, .table-row .subjects, .table-row .replies, .table-row .last-reply{
+    padding: 5px;
+    margin: 2px;
+    background-color: #007eff;
+}
+
+.table-row .status{
+    flex: 5%;
+    font-size: 30px;
+    text-align: center;
+}
+
+.table-row .subjects{
+    flex: 70%;
+}
+
+.table-row .replies{
+    flex: 10%;
+}
+
+.table-row .last-reply{
+    flex: 15%;
+}
+
+/* navigation path*/
+/* Pagination*/
+
+.pagination{
+    padding: 20px;
+    font-size: 15px;
+}
+
+.pagination a{
+    color: #fff;
+    margin-inline: 5px;
+    padding: 5px 10px;
+    border: solid 0.5px #fff;
+}
+
+.pagination a:hover{
+    opacity: 0.5;
+}
+
+.note{
+    background-color:#111314;
+    padding: 20px;
+    display: block;
+}
+
+.note span{
+    font-size: 20px;
+    margin-block: 5px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Стиль для кнопки dropdown */
+.dropdown-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #52057b; /* Фиолетовый фон */
+    color: white;
+    border: 2px solid #52057b; /* Фиолетовая рамка */
+    border-radius: 30px; /* Закругленные углы */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Эффект при наведении на кнопку dropdown */
+.dropdown-button:hover {
+    background-color: #ff0042; /* Красный фон */
+    border-color: #ff0042; /* Красная рамка */
+    box-shadow: 0px 4px 10px rgba(255, 0, 66, 0.8); /* Ярко-красная тень */
+    transform: scale(1.05); /* Увеличение кнопки */
+}
+
+/* Скрытый основной выпадающий список */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #111314; /* Черный фон */
+    min-width: 160px;
+    border-radius: 5px;
+    border: 2px solid #52057b; /* Фиолетовая рамка */
+    box-shadow: 0px 4px 10px rgba(82, 7, 123, 0.8); /* Фиолетовая тень */
+    z-index: 1;
+    transition: all 0.3s ease; /* Плавная анимация */
+}
+
+/* Стиль для элементов выпадающего списка */
+.dropdown-content a {
+    color: white; /* Белый текст */
+    padding: 12px 20px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #333;
+    transition: background-color 0.3s ease;
+}
+
+/* Эффект при наведении на элементы списка */
+.dropdown-content a:hover {
+    background-color: #52057b; /* Фиолетовый фон при наведении */
+    color: white;
+}
+
+/* Подменю, скрытое по умолчанию */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background-color: #111314; /* Черный фон */
+    min-width: 160px;
+    border-radius: 5px;
+    border: 2px solid #52057b; /* Фиолетовая рамка */
+    box-shadow: 0px 4px 10px rgba(82, 7, 123, 0.8); /* Фиолетовая тень */
+    transition: all 0.3s ease;
+}
+
+/* Показать подменю при наведении */
+.dropdown-content .has-submenu:hover .submenu {
+    display: block;
+    transform: translateX(10px); /* Плавное появление подменю с эффектом */
+    opacity: 1;
+}
+
+/* Показать основной выпадающий список */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Анимация для открытия списка */
+.dropdown-content {
+    transform: translateY(-20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-out;
+}
+
+/* Показать список с анимацией */
+.dropdown:hover .dropdown-content {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* ########################################### */
+/*            detail.html                      */
+/* ########################################### */
+
+.head{
+    display: flex;
+    background-color: #2C2C2C;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.authors{
+    flex: 20%;
+}
+
+.content{
+    flex: 80%;
+}
+
+.body{
+    display: flex;
+    background-color: #131415;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.body .authors .username{
+    font-size: 20px;
+}
+
+.body .authors img{
+    max-width: 50px;
+    max-height: 80px;
+}
+
+.body .content .comment button {
+    background-color: #4a148c; /* Темно-фиолетовый фон */
+    color: #ffffff; /* Белый цвет текста */
+    border: none; /* Убираем границу */
+    padding: 10px 20px; /* Увеличиваем отступы для более приятного вида */
+    font-weight: bolder;
+    font-size: 16px; /* Размер текста */
+    border-radius: 8px; /* Скругленные углы */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Тень для объема */
+    cursor: pointer;
+    float: right;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease; /* Плавный переход */
+}
+
+/* Эффект наведения */
+.body .content .comment button:hover {
+    background-color: #6a1b9a; /* Более светлый оттенок фиолетового */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4); /* Более объемная тень */
+    transform: translateY(-3px); /* Поднимаем кнопку */
+}
+
+/* Эффект нажатия */
+.body .content .comment button:active {
+    background-color: #311b92; /* Темный оттенок фиолетового */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Слабая тень */
+    transform: translateY(1px); /* Смещаем кнопку вниз */
+}
+
+/* comment section */
+.comment-area{
+    margin-bottom:50px;
+}
+
+.comment-area textarea{
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    margin-block: 10px;
+}
+
+.comment-area input{
+    float: right;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.comment-area input:hover{
+    border: solid 1px #000000;
+}

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+</head>
+
+<body>
+{% block body %}
+    <style>
+        body {
+            background: rgb(28, 28, 28);
+        }
+
+        .form-control {
+            width: 150px;
+            height: 25px;
+            border-color: #bcbcbc;
+            transition: border-color 0.5s ease
+        }
+
+
+        .form-control:hover {
+            box-shadow: none;
+            border-color: #303030;
+        }
+
+        .profile-button {
+            background: rgb(99, 39, 120);
+            box-shadow: none;
+            border: none;
+        }
+
+        .profile-button:hover {
+            background: #682773;
+        }
+
+        .profile-button:focus {
+            background: #682773;
+            box-shadow: none;
+        }
+
+        .profile-button:active {
+            background: #682773;
+            box-shadow: none;
+        }
+
+        .back:hover {
+            color: #682773;
+            cursor: pointer;
+        }
+
+        .labels {
+            font-size: 11px;
+        }
+
+        .add-experience:hover {
+            background: #BA68C8;
+            color: #ff0000;
+            cursor: pointer;
+            border: solid 1px #BA68C8;
+        }
+
+                .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-upload input[type="file"] {
+            display: none; /* Скрываем стандартный элемент input */
+        }
+
+        .file-upload img {
+            width: 120px; /* Задайте ширину изображения */
+            height: auto; /* Высота автоматически подстраивается */
+            border-radius: 105px; /* Скругление углов */
+        }
+
+        div.div-form-to-edit-profile {
+            font-family: 'Calibri', sans-serif;
+            font-size: 15px;
+        }
+
+/* Стилизация скроллбара для WebKit (Chrome, Safari) */
+textarea {
+    /* Устанавливаем ширину скроллбара */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #682773 transparent;
+    width: 100%;
+    height: 120px;
+    border-radius: 6px;
+}
+
+/* Для WebKit (Chrome, Safari) */
+textarea::-webkit-scrollbar {
+    width: 8px; /* Ширина скроллбара */
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: #682773; /* Цвет скроллбара */
+    border-radius: 10px; /* Скругление углов */
+}
+
+textarea::-webkit-scrollbar-track {
+    background: transparent; /* Фон скроллбара */
+}
+    </style>
+    <div class="container rounded bg-white mt-5 mb-5" >
+        <div class="row" >
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                        {% if user.photo %}
+                            <img class="rounded-circle mt-5" width="150px" src="{{ user.photo.url }}">
+                        {% else %}
+                            <img class="rounded-circle mt-5" width="150px" src="{% static 'user/photo/base_avatar.png' %}" style="width: 50px; height: 50px">
+                        {% endif %}
+                        <span class="font-weight-bold">{{ user.username }}</span>
+                        <span class="text-black-50">{{ user.email }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 border-right" >
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+                    <div class="div-form-to-edit-profile">
+                        <form method="post" action="{% url 'accounts:edit_profile' pk=user.pk %}" class="form-edit-profile" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div>
+                                <label class="file-upload">
+                                    {% if user.photo %}
+                                        <img src="{{ user.photo.url }}" alt="Choose file" />
+                                    {% else %}
+                                        <img src="{% static 'user/photo/base_avatar.png' %}" alt="Choose file" />
+                                    {% endif %}
+                                    <input type="file" name="file" accept="image/*" />
+                                </label>
+                            </div>
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-3 col-form-label">Username:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="username" id="username" value="{{ user.username }}" class="form-control" style="margin-top: 5px; margin-left: -15px">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-form-label">Description:</label>
+                                <textarea name="description" id="description" class="form-control-textarea" maxlength="240">{{ user.description }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-dark" style="padding: 2px 30px; text-align: center; background-color: #682773">Save</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 py-5">
+                    <a class="btn btn-dark" href="{% url 'accounts:change_password' pk=user.pk%}" style="padding: 2px 30px; text-align: center; background-color: #682773">Change password</a>
+                                        <a class="btn btn-dark" href="{% url 'accounts:change_email'%}" style="padding: 2px 30px; text-align: center; background-color: #682773; margin-top: 5px">Change email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+</body>
+</html>

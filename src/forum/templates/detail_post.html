@@ -1,0 +1,152 @@
+{% load static %}
+{% load forum_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+    <link rel="stylesheet" href={% static 'css/forum.css' %}>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <header>
+        <!--NavBar Section-->
+        <div class="navbar">
+            <nav class="navigation hide" id="navigation">
+                <span class="close-icon" id="close-icon" onclick="showIconBar()"><i class="fa fa-close"></i></span>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#">News</a></li>
+                    <li class="nav-item"><a href="{% url 'problems:list' %}">Problems</a></li>
+                    <li class="nav-item"><a href="{% url 'index' %}">Home</a></li>
+                </ul>
+            </nav>
+            <a class="bar-icon" id="iconBar" onclick="hideIconBar()"><i class="fa fa-bars"></i></a>
+            <div class="brand">gc community</div>
+        </div>
+        <!--SearchBox Section-->
+            <div class="search-box">
+                <div>
+                <form method="get" action="{% url 'forum:forum' %}">
+                    <div class="dropdown">
+                        <button class="dropdown-button">Sorted by <i class="fa fa-arrow-down"></i></button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'forum:forum' %}?sorted=oldest&page=1">Oldest</a>
+                            <a href="{% url 'forum:forum' %}?sorted=newest&page=1">Newest</a>
+                            <a href="{% url 'forum:forum' %}?sorted=m_comments&page=1">Most comments</a>
+                            <a href="{% url 'forum:forum' %}?sorted=l_comments&page=1">Least comments</a>
+                        </div>
+                    </div>
+                    <input type="text" name="search" placeholder="search ...">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+                </div>
+            </div>
+    </header>
+    <div class="container">
+
+        <!--Topic Section-->
+        <div class="topic-container">
+            <!--Original thread-->
+            <div class="head">
+                <div class="authors">Author: {{ conversation.author.username }}</div>
+                <div class="content"></div>
+            </div>
+
+            <div class="body">
+                <div class="authors">
+                    <div class="username"><a href="">{{ conversation.author.username }}</a></div>
+                    {% if conversation.author.is_staff %}
+                        <div>Admin</div>
+                    {% else %}
+                        <div>User</div>
+                    {% endif %}
+                    <a href="{% url 'accounts:profile' pk=conversation.author.pk %}">
+                        {% if conversation.author.photo %}
+                        <img src="{{ conversation.author.photo.url }}" alt="" style="width: 200px; height: 50px; border-radius: 5px">
+                        {% else %}
+                            <img src="{% static 'user/photo/base_avatar.png' %}" alt="" style="width: 40px; height: 40px; border-radius: 20px">
+                        {% endif %}
+                    </a>
+                    <div>Posts: <span>{% get_all_posts_by_user conversation.author.pk %}</span></div>
+                    <div>Comments: <span>{% get_all_comments_by_user conversation.author.pk %}</span></div>
+                    <div class="time">
+                        <span>Date: {{ conversation.created_at }}</span>
+                    </div>
+                </div>
+                <div class="content">
+                    {{ conversation.content }}
+                    {% if conversation.image %}
+                        <a href="{{ conversation.image.url }}"><img src="{{ conversation.image.url }}" alt="" style="width: 38%; height: 42%; border-radius: 5px"></a>
+                    {% endif %}
+                    <div class="comment">
+                        <button onclick="showComment()">Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="head">
+                <div class="authors">Total: {{ comments.count }} comments</div>
+        </div>
+
+
+        <!--Comment Area-->
+        <div class="comment-area hide" id="comment-area">
+            <form action="{% url 'forum:create_comment' pk=conversation.pk %}" method="post">
+                {% csrf_token %}
+                <textarea name="reply" id="" placeholder="reply here ... "></textarea>
+                <button type="submit" value="submit">Submit</button>
+            </form>
+        </div>
+
+        <!--Comments Section-->
+        {% for i in comments %}
+        <div class="comments-container">
+            <div class="body">
+                <div class="authors">
+                    <div class="username"><a href="">{{ i.author.username }}</a></div>
+                    {% if i.author.is_staff %}
+                        <div>Admin</div>
+                    {% else %}
+                        <div>User</div>
+                    {% endif %}
+                    <a href="{% url 'accounts:profile' pk=i.author.pk %}">
+                        {% if i.author.photo %}
+                        <img src="{{ i.author.photo.url }}" alt="" style="width: 200px; height: 50px; border-radius: 5px">
+                        {% else %}
+                            <img src="{% static 'user/photo/base_avatar.png' %}" alt="" style="width: 40px; height: 40px; border-radius: 20px">
+                        {% endif %}
+                    </a>
+                    <div>Posts: <u>{% get_all_posts_by_user i.author.pk %}</u></div>
+                    <div>Comments: <u>{% get_all_comments_by_user i.author.pk %}</u></div>
+                    <div class="time">
+                        <span>Date: {{ i.created_at }}</span>
+                    </div>
+                </div>
+                <div class="content">
+                    {{ i.content }}
+                    <div class="comment">
+                        <button onclick="showReply()">Reply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Reply Area-->
+        <div class="comment-area hide" id="reply-area">
+            <form action="#" method="post">
+                {% csrf_token %}
+                <textarea name="reply" id="" placeholder="reply here ... "></textarea>
+                <button type="submit" value="submit">Submit</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    <footer>
+        <span>&copy;  Selmi Abderrahim | All Rights Reserved</span>
+    </footer>
+    <script src={% static 'js/forum.js' %}></script>
+</body>
+</html>

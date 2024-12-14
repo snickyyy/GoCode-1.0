@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load problems_list %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+{% block body %}
+        <style>
+        body {
+            background: rgb(28, 28, 28);
+        }
+        .file-upload input[type="file"] {
+            display: none; /* Скрываем стандартный элемент input */
+        }
+
+        .file-upload img {
+            width: 120px; /* Задайте ширину изображения */
+            height: auto; /* Высота автоматически подстраивается */
+            border-radius: 105px; /* Скругление углов */
+        }
+
+        div.div-form-to-edit-profile {
+            font-family: 'Calibri', sans-serif;
+            font-size: 15px;
+        }
+
+/* Стилизация скроллбара для WebKit (Chrome, Safari) */
+textarea {
+    /* Устанавливаем ширину скроллбара */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #682773 transparent;
+    width: 100%;
+    height: 120px;
+    border-radius: 6px;
+}
+
+/* Для WebKit (Chrome, Safari) */
+textarea::-webkit-scrollbar {
+    width: 8px; /* Ширина скроллбара */
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: #682773; /* Цвет скроллбара */
+    border-radius: 10px; /* Скругление углов */
+}
+
+textarea::-webkit-scrollbar-track {
+    background: transparent; /* Фон скроллбара */
+}
+    </style>
+<div class="centered-div" style="display: flex; flex-direction: column; align-items: center;">
+    <h5 style="color: white;">Problems</h5>
+    <div style="background-color: #444444; margin-top: 10px; height: 1px; width: 100%;"></div>
+    <div style="display: flex; align-items: center; margin-top: 10px;">
+        <div class="btn-group" role="group" aria-label="Basic example" style="margin-right: 10px;">
+            <a href="{% url 'problems:list' %}?category=Math" type="button" class="btn btn-secondary" style="height: 30px; font-size: 13px; font-family: 'JosefinSans'; margin-top: 10px; background-color: #424242;">Math</a>
+            <a href="{% url 'problems:list' %}?category=db" type="button" class="btn btn-secondary" style="height: 30px; font-size: 13px; font-family: 'JosefinSans'; margin-top: 10px; background-color: #424242;">DB</a>
+            <a href="{% url 'problems:list' %}?category=algorithms" type="button" class="btn btn-secondary" style="height: 30px; font-size: 13px; font-family: 'JosefinSans'; margin-top: 10px; background-color: #424242;">Algorithms</a>
+        </div>
+        <form method="get" action="{% url 'problems:list' %}" style="display: flex; align-items: center;">
+            <input class="search-task" type="text" name="search-task" placeholder="Search task" style="flex: 1; height: 30px;">
+            <button class="btn btn-secondary" type="submit" style="width: 80px; height: 30px; border: none; background-color: #424242; color: white; border-radius: 3px; font-size: 14px; margin-top: 10px">
+                Search
+            </button>
+        </form>
+<div class="dropdown">
+    <button style="background-color: #424242; margin-left: 10px; height: 30px; font-family: 'JosefinSans'; font-size: 14px; margin-top: 10px"
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-expanded="false">
+        all languages
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+    </ul>
+</div>
+    </div>
+    <div style="width: 100%; margin-top: 20px;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: rgba(0,0,0,0); color: white;">
+                    <th style="padding: 10px;">Status</th>
+                    <th style="padding: 10px; border-radius: 5px 0 0 5px;">Task Name</th>
+                    <th style="padding: 10px;">Count solutions</th>
+                    <th style="padding: 10px;">Category</th>
+                    <th style="padding: 10px;">Difficulty</th>
+                </tr>
+                <!-- Разделительная линия -->
+                <tr>
+                    <td colspan="5" style="height: 1px; background-color: #6c6c6c;"></td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for i in tasks %}
+                <tr class="{% cycle 'light-bg' 'dark-bg' %}" style="background-color: {% cycle '#3b3b3b' '#2e2e2e' %};">
+                    {% if i|get_status_by_user:user.pk != None %}
+                        {% if i|get_status_by_user:user.pk == 1 %}
+                            <td style="padding: 10px; color: #06a109; font-size: 14px">Accepted</td>
+                        {% else %}
+                            <td style="padding: 10px; color: #a37604; font-size: 14px">In-Development</td>
+                        {% endif %}
+                    {% else %}
+                        <td style="padding: 10px; color: #9c9c9c; font-size: 14px">None</td>
+                    {% endif %}
+                    <td style="padding: 10px;">
+                        <a href="{% url 'problems:selected_task' pk=i.pk %}" style="color: white; text-decoration: none;">{{ i.name }}</a>
+                    </td>
+                    <td style="padding: 10px; color: #ffffff;">{{ i.get_count_solutions }}</td>
+                    <td style="padding: 10px; color: #ffffff;">{{ i.category }}</td>
+                    {% if i.difficulty == 0 %}
+                        <td style="padding: 10px; color: #06a109;">Easy</td>
+                    {% elif i.difficulty == 1 %}
+                        <td style="padding: 10px; color: #a37604;">Medium</td>
+                    {% else %}
+                        <td style="padding: 10px; color: #d60000;">Hard</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <nav class="page-navigation">
+            {% for i in paginator.page_range %}
+                <div style="background-color: #353535; width: 30px; height: 30px; display: inline-block; text-align: center; margin-top: 12px; border-radius: 3px">
+                    <a href="?page={{ i }}" style="color: white; text-decoration: none; width: 30px; height: 30px;">{{ i }}</a>
+                </div>
+            {% endfor %}
+        </nav>
+    </div>
+</div>
+
+    <style>
+        .centered-div .btn-group .btn-secondary {
+        height: 30px;
+        font-size: 13px;
+        background-color: #424242;
+        margin-top: 10px;
+    }
+
+    .task-item {
+        padding: 10px;
+        border-radius: 3px;
+    }
+
+    /* Чередование цветов для списка задач */
+    .light-bg {
+        background-color: #3a3a3a;
+    }
+    .dark-bg {
+        background-color: #2c2c2c
+    }
+        @font-face {
+        font-family: 'JosefinSans';
+        src: url("{% static 'fonts/JosefinSans-VariableFont_wght.ttf' %}") format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        }
+    .search-task {
+        margin-top: 10px;
+        background-color: #444444;
+        border-radius: 3px;
+        border: 1px solid #8e8e8e; /* Задаем толщину и цвет рамки */
+        transition: border-color 0.3s ease;
+        color: white;
+        font-size: 14px;
+    }
+
+    .search-task::placeholder {
+        color: #939393;
+        font-size: 14px;
+        font-family: JosefinSans;
+    }
+
+    .search-task:hover {
+        border-color: white; /* Цвет рамки при наведении */
+    }
+    .search-task:focus {
+        outline: none;
+        border-color: white; /* Цвет рамки при наведении */
+    }
+        .centered-div h5 {
+            font-family: 'JosefinSans', sans-serif;
+            font-size: 30px;
+        }
+        /* Центрируем div */
+        .centered-div {
+            background: rgb(38, 38, 38); /* Цвет фона как у header */
+            color: white;
+            width: 60%; /* Ширина div */
+            height: 100%;
+            padding: 20px; /* Отступы внутри div */
+            margin: auto; /* Центрирование по горизонтали */
+            margin-top: 20%; /* Отступ сверху для центрирования по вертикали */
+            border-radius: 8px; /* Скругление углов */
+            text-align: center; /* Текст по центру */
+            margin-top: 50px;
+
+        }
+    </style>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock body %}
+</body>
+</html>

@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+
+</head>
+
+<header class="site-header sticky-top py-1" style="background: rgb(38,38,38); border-bottom: 1px solid #555;">
+    <nav class="selection-of-partitions d-flex justify-content-between align-items-center">
+        <div class="left-links d-flex">
+            <a class="py-2" href="{% url 'index' %}" aria-label="Product">
+                <img class="selection-of-partitions-img" src="{% static 'logos/GoCode_logo_white.svg' %}" alt="Product Icon" width="40px" height="25px" style="opacity: 0.5">
+            </a>
+            <a class="py-2 d-none d-md-inline-block" href="#" style="text-decoration: none;">News</a>
+            <a class="py-2 d-none d-md-inline-block" href="#" style="text-decoration: none;">Forum</a>
+            <a class="py-2 d-none d-md-inline-block" href="#" style="text-decoration: none;">Problems</a>
+            <a class="py-2 d-none d-md-inline-block" href="https://github.com/snickyyy/GoCode" style="text-decoration: none;">Github</a>
+            <a class="py-2 d-none d-md-inline-block" href="#" style="text-decoration: none;">Support</a>
+            <a class="py-2 d-none d-md-inline-block" href="#" style="text-decoration: none;">Pricing</a>
+            <a class="py-2 d-none d-md-inline-block" href="#" style="text-decoration: none;">Cart</a>
+        </div>
+        <div class="right-link">
+            {% if user.is_authenticated %}
+                <div style="display: flex; align-items: center; gap: 10px; margin-right: 140px;">
+                <span style="font-size: 14px; color: #8e8e8e;">{{ user.username }}</span> <!-- Установите нужный цвет -->
+                    <a href="{% url 'accounts:profile' pk=user.pk %}">
+                        {% if user.photo %}
+                        <img src="{{ user.photo.url }}" alt="" style="width: 40px; height: 40px; border-radius: 20px">
+                        {% else %}
+                            <img src="{% static 'user/photo/base_avatar.png' %}" alt="" style="width: 40px; height: 40px; border-radius: 20px">
+                        {% endif %}
+                    </a>
+                </div>
+            {% else %}
+                <div style="display: flex; align-items: center; gap: 8px; margin-right: 280px;">
+                    <a class="btn btn-outline-secondary" href="{% url 'accounts:register' %}" style="height: 35px; font-size: 15px; padding-top: 5px;">Register</a>
+                    <span style="font-size: 15px; color: #8e8e8e;">or</span> <!-- Установите нужный цвет -->
+                    <a class="btn btn-outline-secondary" href="{% url 'accounts:login' %}" style="height: 35px; font-size: 15px; padding-top: 5px;">Sign in</a>
+                </div>
+
+            {% endif %}
+        </div>
+    </nav>
+</header>
+
+<body>
+{% block body %}
+    <style>
+        body {
+            background: rgb(28, 28, 28);
+        }
+
+            .button-change-profile {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .button-change-profile a {
+      background-color: #008a32;
+      border-radius: 5px;
+      box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+      color: #00dd00;
+      cursor: pointer;
+      display: inline-block;
+      font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+      padding: 6px 25px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 250ms;
+      border: 0;
+      font-size: 16px;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .button-change-profile a:hover {
+      box-shadow: rgba(44,187,99,.45) 0 -25px 18px -14px inset,rgba(44,187,99,.35) 0 1px 2px,rgba(44,187,99,.35) 0 2px 4px,rgba(44,187,99,.35) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+      transform: scale(1.05) rotate(-1deg);
+    }
+
+            .progress-container {
+            display: flex;
+            align-items: center;
+            background-color: rgba(0,0,0,0.09);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(165, 165, 165, 0.3);
+                margin-top: 15px;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            background-color: #ff0000;
+        }
+
+        .progress-ring::before {
+            content: "";
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background-color: #9f9f9f;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .progress-ring .text {
+            position: absolute;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .progress-ring .text h2 {
+            font-size: 1.5em;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .progress-ring .text p {
+            font-size: 0.8em;
+            margin: 2px 0;
+            color: #c6c6c6;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .details div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .details .level {
+            font-weight: bold;
+        }
+
+        .easy { color: #4CAF50; }
+        .medium { color: #ffae00; }
+        .hard { color: #F44336; }
+
+        .details .count {
+            color: #b1b1b1;
+        }
+
+        .count {
+        font-size: 14px; /* Измените на нужный размер */
+            margin-left: 5px;
+        color: #b1b1b1; /* Этот цвет уже задан, но можно изменить */
+        }
+        .easy, .medium, .hard {
+            font-size: 14px;
+        }
+
+div.user-description-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.09);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(165, 165, 165, 0.3);
+    margin-top: 14px;
+    width: 100%; /* Задает ширину контейнера */
+    max-width: 400px; /* Устанавливает максимальную ширину контейнера */
+}
+
+span.description-name {
+    font-family: 'Arial Black', sans-serif;
+    font-size: 15px;
+    text-align: center;
+}
+
+span.description-values {
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    align-self: flex-start;
+    margin-top: 10px;
+    word-wrap: break-word; /* Перенос длинных слов */
+    width: 100%; /* Занимает всю ширину контейнера */
+}
+div.time-memory-statistic {
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.09);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(165, 165, 165, 0.3);
+    margin-top: 14px;
+    width: 100%; /* Задает ширину контейнера */
+    max-width: 400px; /* Устанавливает максимальную ширину контейнера */
+    font-family: 'Arial Black', sans-serif;
+    font-size: 14px;
+}
+
+div.languages-solutions {
+        flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.09);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(165, 165, 165, 0.3);
+    margin-top: 14px;
+    width: 100%; /* Задает ширину контейнера */
+    max-width: 400px; /* Устанавливает максимальную ширину контейнера */
+    font-family: 'Arial Black', sans-serif;
+    font-size: 14px;
+}
+
+div.all-solutions-scroll-container {
+            flex-direction: column;
+    color: #3c3f4c;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.09);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(165, 165, 165, 0.3);
+    margin-top: 14px;
+    width: 100%; /* Задает ширину контейнера */
+    max-width: 400px; /* Устанавливает максимальную ширину контейнера */
+    font-family: 'Arial Black', sans-serif;
+    font-size: 14px;
+}
+
+span.day-solutions-scroll-container {
+    color: #818181;
+    margin-left: 140px;
+    font-family: 'Calibri', sans-serif;
+    font-size: 15px;
+}
+
+    </style>
+    <div class="container rounded bg-white mt-5 mb-5" >
+        <div class="row" >
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    {% if user.photo %}
+                        <img class="rounded-circle mt-5" width="150px" src="{{ user.photo.url }}">
+                    {% else %}
+                        <img class="rounded-circle mt-5" width="150px" src="{% static 'user/photo/base_avatar.png' %}" style="width: 50px; height: 50px">
+                    {% endif %}
+                    <span class="font-weight-bold">{{ user.username }}</span>
+                    <span class="text-black-50">{{ user.email }}</span>
+                    <div class="button-change-profile">
+                        <a href="{% url 'accounts:edit_profile' pk=user.pk%}">Edit Profile</a>
+                    </div>
+                    <div class="languages-solutions">
+                        {% for obj in count_aggregate_language %}
+                            <span>{{ obj.language__language }}: {{ obj.count }}</span>
+                            <br>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 border-right" >
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="text-right" style="margin: 0 auto; text-align: center; font-family: 'Franklin Gothic Heavy', sans-serif;">Profile</h2>
+                    </div>
+                    <div class="time-memory-statistic">
+                        <span>Max time for task: {{ max_time }} ms</span>
+                        <br>
+                        <span>Min time for task: {{ min_time }} ms</span>
+                        <br>
+                        <span>Max memory for task: {{ max_memory }} mb</span>
+                        <br>
+                        <span>Min memory for task: {{ min_memory }} mb</span>
+                    </div>
+                    <div class="all-solutions-scroll-container">
+                        {% for solution in solutions_user %}
+                            <div>
+                                <a class="solution-in-scroll" href="{% url 'problems:selected_task' pk=solution.task.pk %}">{{ solution.task.name }}<span class="day-solutions-scroll-container">{{ solution.get_date }} day ago</span> </a>
+                            </div>
+                            <br>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="progress-container">
+                    <!-- Диаграмма прогресса -->
+                    <div class="progress-ring" id="progressRing">
+                        <div class="text">
+                            <p>All</p>
+                            <h2 id="totalSolved" style="font-size: 20px; color:#2a2a2a;">15</h2>
+                            <p id="totalTasks">3333</p>
+                        </div>
+                    </div>
+
+                    <!-- Данные по уровням сложности -->
+                    <div class="details">
+                        <div><span class="level easy">Easy</span> <span class="count" id="easyCount">11 / 831</span></div>
+                        <div><span class="level medium">Mid</span> <span class="count" id="mediumCount">3 / 1744</span></div>
+                        <div><span class="level hard">Hard</span> <span class="count" id="hardCount">1 / 758</span></div>
+                    </div>
+                </div>
+                    <script>
+                        // Данные о решенных задачах
+                        const data = {
+                            totalSolved: {{ solutions_user|length }},
+                            totalTasks: {{ problems_count }},
+                            easy: { solved: {{ easy|length }}, total: {{ easy_count_pr }} },
+                            medium: { solved: {{ mid|length }}, total: {{ mid_count_pr }} },
+                            hard: { solved: {{ hard|length }}, total: {{ hard_count_pr }} }
+                        };
+
+                        // Расчет процента общего прогресса
+                        const overallProgress = (data.totalSolved / data.totalTasks) * 100;
+
+                        // Назначение данных
+                        document.getElementById('totalSolved').innerText = data.totalSolved;
+                        document.getElementById('totalTasks').innerText = data.totalTasks;
+                        document.getElementById('easyCount').innerText = `${data.easy.solved} / ${data.easy.total}`;
+                        document.getElementById('mediumCount').innerText = `${data.medium.solved} / ${data.medium.total}`;
+                        document.getElementById('hardCount').innerText = `${data.hard.solved} / ${data.hard.total}`;
+
+                        // Установка градиента для кольца, синим цветом для общего прогресса
+                        const progressRing = document.getElementById('progressRing');
+                        progressRing.style.background = `conic-gradient(
+                            #565656 ${overallProgress}%,  /* зеленый сегмент, соответствующий прогрессу */
+                            #929292 ${overallProgress}% 100% /* серый сегмент для оставшегося прогресса */
+                        )`;
+                    </script>
+                    <div class="user-description-profile">
+                        <span class="description-name">Description:</span>
+                        <span class="description-values">{{ user.description }}</span>
+                    </div>
+                    <div class="button-logout">
+                        <a class="btn btn-dark" href="{% url 'accounts:logout' %}" style="padding: 2px 30px; text-align: center; background-color: #a53737; color: white; margin-top: 195px; margin-left: 180px">Logout</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+</body>
+</html>

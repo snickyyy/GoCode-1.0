@@ -1,0 +1,194 @@
+# docker run --rm -it -d --name go_cont -p 8010:8008 -v C:\main\Python\GoCode\src:/GoCode/src 0a8aaa255b66
+
+services:
+  backend:
+    build: ./
+    container_name: backend
+    working_dir: /GoCode
+    networks:
+      - backend_network
+      - redis_network
+    ports:
+      - ${LOCAL_PORT}:${WSGI_PORT}
+    command:
+      - ./commands/run_server_${MODE}.sh
+    volumes:
+      - ./src:/GoCode/src
+      - ./commands:/GoCode/commands
+      - ./.env:/GoCode/.env
+    env_file:
+      - .env
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    environment:
+#      DOCKER_TLS_CERTDIR: ""
+
+  postgres:
+    image: postgres:16.4
+    container_name: postgresDB
+    networks:
+      - backend_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/Lib/postgresql/data
+    env_file:
+      - .env
+
+  redis:
+    image: redis:7.4.0-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    restart: on-failure
+    networks:
+      - redis_network
+      - testing_network
+    volumes:
+      - redis_data:/var/lib/redis/data
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: nginx
+    working_dir: /GoCode
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - .\src\staticfiles:/GoCode/src/staticfiles
+      - .\src\media:/GoCode/src/media
+    networks:
+      - backend_network
+
+  testing:
+    build: ./src/problems/docker/
+    container_name: testing
+    working_dir: /GoCode
+    networks:
+      - testing_network
+    depends_on:
+      - backend
+      - redis
+    restart: on-failure
+    volumes:
+      - ./src/problems/tasks/process:/GoCode/tasks/process
+      - ./src/media/data_tests:/GoCode/tasks/process/tests
+      - ./commands:/GoCode/commands
+    command:
+      - ./commands/run_testing_docker.sh
+
+#  celery:
+#    build: ./
+#    container_name: celery
+#    command:
+#      - /GoCode/commands/start_celery.sh
+#    restart: on-failure
+#    env_file:
+#      - .env
+#    volumes:
+#      - ./src:/GoCode/src
+#      - ./commands:/GoCode/commands
+#    depends_on:
+#      - redis
+#      - backend
+#    networks:
+#      - redis_network
+#      - backend_network
+#    ports:
+#      - "5556:5555"
+
+#  flower:
+#    build: ./
+#    container_name: flower
+#    volumes:
+#      - ./src:/GoCode/src
+#      - ./commands:/GoCode/commands
+#    env_file:
+#      - .env
+#    command: /GoCode/commands/start_flower.sh
+#    ports:
+#      - "5556:5555"
+#    depends_on:
+#      - celery
+#    networks:
+#      - redis_network
+#      - backend_network
+
+#  celerybeat:
+#    build: ./
+#    container_name: celerybeat
+#    command: /GoCode/commands/start_celerybeat.sh
+#    restart: on-failure
+#    env_file:
+#      - .env
+#    volumes:
+#      - ./src:/GoCode/src
+#      - ./commands:/GoCode/commands
+#    depends_on:
+#      - redis
+#      - backend
+#    networks:
+#      - redis_network
+#      - backend_network
+
+#  pg_admin:
+#    image: dpage/pgadmin4
+#    container_name: pgAmin
+#    env_file:
+#      - .env
+#    restart: on-failure
+#    ports:
+#      - "5000:80"
+#    volumes:
+#      - pg_admin:/var/lib/pgadmin
+#    depends_on:
+#      - postgres
+#
+#  mongodb:
+#    image: mongodb/mongodb-enterprise-server
+#    container_name: mongodb
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - mongo_data:/data/db
+#    restart: on-failure
+#    env_file:
+#      - .env
+#
+#  mongo_admin:
+#    image: mongo-express
+#    container_name: mongoAdmin
+#    restart: on-failure
+#    ports:
+#      - "8081:8081"
+#    env_file:
+#      - .env
+#    links:
+#      - mongodb
+#    depends_on:
+#      - mongodb
+
+#  redis:
+#    ...
+
+networks:
+  backend_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+  testing_network:
+    driver: bridge
+
+volumes:
+  pg_data: { }
+  redis_data: { }
+#  pg_admin: { }
+#  mongo_data: { }

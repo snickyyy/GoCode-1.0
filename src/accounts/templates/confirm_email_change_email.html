@@ -1,0 +1,3 @@
+Hi, {{user.username}}
+<p>Please follow the link for finished registration</p>
+<a href="http://{{ domain }} {% url 'accounts:change_email_confirm' pk=pk token=token%}?email={{ new_email }}">Register</a>
